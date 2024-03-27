@@ -45,7 +45,7 @@ const postUser = async (req, res) => {
   try {
     // Insert the new worker into the database
     const result = await userModel.insertWorker(worker);
-    res.status(201).json({ message: "User created" });
+    res.status(201).json({ message: "Worker created" });
 
     // Further steps would include associating the worker with companies, departments, and positions
     // These could be handled through additional API endpoints or application logic
