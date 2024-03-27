@@ -1,0 +1,14 @@
+{
+  "name": "workplacetrackerbackend",
+  "version": "1.0.0",
+  "description": "express backend for work time tracking",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "workplace tracking team",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
