@@ -1,0 +1,40 @@
+CREATE DATABASE workPlaceTrackingDB;
+USE workPlaceTrackingDB;
+
+-- Worker Table
+CREATE TABLE worker (
+    id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    name TEXT NOT NULL,
+    email TEXT NOT NULL,
+    phone VARCHAR(20) NOT NULL,
+    company_id INT,
+    department VARCHAR(40) NOT NULL DEFAULT '-',
+    position VARCHAR(40) NOT NULL DEFAULT '-',
+    salary DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (company_id) REFERENCES company(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- Company Table
+CREATE TABLE company (
+    id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    businessId INT NOT NULL,
+    name TEXT NOT NULL,
+    address TEXT NOT NULL,
+    phone VARCHAR(20) NOT NULL,
+    email TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- WorkArea Table
+CREATE TABLE workArea (
+    id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    company_id INT NOT NULL,
+    name TEXT NOT NULL,
+    description TEXT NOT NULL,
+    latitude DECIMAL(10, 8) NOT NULL DEFAULT 0.00000000,
+    longitude DECIMAL(11, 8) NOT NULL DEFAULT 0.00000000,
+    radius DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (company_id) REFERENCES company(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
