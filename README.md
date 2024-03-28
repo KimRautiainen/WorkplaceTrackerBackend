@@ -37,23 +37,18 @@ The project uses environment variables for configuration. Since the `.env` file 
 4. **Initialize the Database**
 
 Execute the SQL script included in the repository to set up your database schema:
-
+```bash
 mysql -u yourUsername -p yourDatabaseName < path/to/sql_script.sql
-
-javascript
-Copy code
+```
 
 Replace `yourUsername`, `yourDatabaseName`, and `path/to/sql_script.sql` with your MySQL/MariaDB username, the name of your database, and the path to the provided SQL script, respectively.
 
 ### Running the Application
 
 To start the application, run:
-
+```bash
 npm start
-
-markdown
-Copy code
-
+```
 You should see a message indicating that the app is running and listening on a specified port (default: 3000).
 
 ## Documentation
