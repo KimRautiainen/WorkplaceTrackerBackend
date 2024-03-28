@@ -10,6 +10,7 @@ const fileFilter = (req, file, cb) => {
   } else {
     // reject file
     cb(null, false);
+    cb(new Error("Invalid file type, only JPEG and PNG is allowed!"));
   }
 };
 // Multer upload object and file size limiter
