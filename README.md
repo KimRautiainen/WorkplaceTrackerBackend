@@ -61,9 +61,6 @@ You should see a message indicating that the app is running and listening on a s
 - **API Documentation**: Refer to the Postman collection included in the repository for API endpoints and usage.
 - **SQL Schema**: The SQL documentation is available on the [Wiki page](https://github.com/KimRautiainen/workplaceTrackerBackend/wiki/SQL) of this repository.
 
-## Contributing
-
-We welcome contributions to the Workplace Tracking System! Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
 
 ## License
 
