@@ -58,7 +58,9 @@ You should see a message indicating that the app is running and listening on a s
 
 ## Documentation
 
-- **API Documentation**: Refer to the Postman collection included in the repository for API endpoints and usage.
+- **API Documentation**: [Guest link to postman team workspace](https://workplacetracker.postman.co/workspace/Team-Workspace~1b5dd4ce-5490-45ff-8fb0-19de316cb1bd/collection/31432766-c1f929d1-93ba-4a5e-8a65-c6ddd9e00031?action=share&creator=31432766)
+
+
 - **SQL Schema**: The SQL documentation is available on the [Wiki page](https://github.com/KimRautiainen/workplaceTrackerBackend/wiki/SQL) of this repository.
 
 
