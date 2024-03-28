@@ -4,7 +4,8 @@
   "description": "express backend for work time tracking",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest",
+    "start": "node server.js"
   },
   "author": "workplace tracking team",
   "license": "ISC",
@@ -20,6 +21,10 @@
     "mysql2": "^3.9.3",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
-    "passport-local": "^1.0.0"
+    "passport-local": "^1.0.0",
+    "supertest": "^6.3.4"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
   }
 }
