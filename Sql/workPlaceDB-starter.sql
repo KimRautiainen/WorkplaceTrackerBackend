@@ -20,6 +20,7 @@ CREATE TABLE `company` (
     `businessId` INT NOT NULL, -- Business registration number or unique company ID
     `name` TEXT NOT NULL, -- Company name
     `address` TEXT NOT NULL, -- Company physical address
+    `picture` TEXT NOT NULL, -- Path or URL to the company's logo or picture
     `phone` VARCHAR(20) NOT NULL, -- Company contact phone number
     `email` TEXT NOT NULL, -- Company email address
     `password` TEXT NOT NULL, -- Company password (hashed)
