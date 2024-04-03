@@ -4,8 +4,8 @@ const userModel = require("../models/userModel");
 const bcrypt = require("bcryptjs");
 const { validationResult } = require("express-validator");
 const multer = require("multer");
-const fs = require('fs');
-const path = require('path');
+const fs = require("fs");
+const path = require("path");
 
 // Create new user
 const postUser = async (req, res) => {
@@ -57,7 +57,12 @@ const postUser = async (req, res) => {
     });
   }
 };
+// Check token
+const checkToken = (req, res) => {
+  res.json({ user: req.user });
+};
 
 module.exports = {
   postUser,
+  checkToken,
 };

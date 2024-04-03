@@ -4,6 +4,7 @@ const cors = require("cors");
 const passport = require("./utils/passport");
 const authRoute = require("./routes/authRoute");
 const app = express();
+const userRoute = require("./routes/userRoute");
 
 // Log middleware
 app.use((req, res, next) => {
@@ -29,6 +30,7 @@ app.use(passport.initialize());
 // Use the authRoute for handling authentication-related routes
 app.use('/auth', authRoute);
 
-// Add routes that require jwt strategy ->
+app.use('/user', passport.authenticate('jwt-user', {session: false}), userRoute);
+
 
 module.exports = app;

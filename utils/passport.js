@@ -79,6 +79,7 @@ passport.use(
 
 // JWT strategy for user
 passport.use(
+  'jwt-user',
   new JWTStrategy(
     {
       jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
@@ -99,6 +100,7 @@ passport.use(
 
 // JWT strategy for employee
 passport.use(
+  'jwt-employee',
   new JWTStrategy(
     {
       jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
