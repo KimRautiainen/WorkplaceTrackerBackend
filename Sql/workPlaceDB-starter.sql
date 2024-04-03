@@ -80,3 +80,33 @@ CREATE TABLE `worker_workArea` (
     FOREIGN KEY (`worker_id`) REFERENCES `worker`(`id`),
     FOREIGN KEY (`workArea_id`) REFERENCES `workArea`(`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- Work Log Table: Records work periods for workers in specific work areas.
+CREATE TABLE `work_log` (
+    `id` INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    `worker_id` INT NOT NULL,
+    `company_id` INT NOT NULL,
+    `workArea_id` INT NOT NULL,
+    `start_time` DATETIME NOT NULL, -- When the work period started
+    `end_time` DATETIME NOT NULL, -- When the work period ended
+    `hours_worked` TIME NOT NULL, -- Duration of work (HH:MM:SS)
+    `date_recorded` DATE NOT NULL, -- The date when the work period was recorded
+    `work_type` ENUM('regular', 'overtime', 'project') DEFAULT 'regular', -- Type of work period
+    `comment` TEXT, -- User comments about the work period
+    `photo_url` TEXT, -- Optional URL/path to a photo related to the work log
+    FOREIGN KEY (`worker_id`) REFERENCES `worker`(`id`),
+    FOREIGN KEY (`company_id`) REFERENCES `company`(`id`),
+    FOREIGN KEY (`workArea_id`) REFERENCES `workArea`(`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- WorkArea_Files Table: Stores files associated with work areas.
+CREATE TABLE `workArea_files` (
+    `id` INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    `workArea_id` INT NOT NULL,
+    `title` VARCHAR(255) NOT NULL, -- Title of the file
+    `file_url` TEXT NOT NULL, -- URL/path to the file
+    `file_type` ENUM('document', 'photo', 'other') DEFAULT 'document', -- Type of the file
+    `description` TEXT, -- Optional description of the file
+    `uploaded_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- When the file was uploaded
+    FOREIGN KEY (`workArea_id`) REFERENCES `workArea`(`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
