@@ -39,7 +39,7 @@ const handleEmployeeUpload = (req, res, next) => {
                 .isLength({ min: 5, max: 30 })
                 .withMessage("Password must be at least 5 characters long"),
             body("phone").isMobilePhone().withMessage("Invalid phone number"),
-            body("salary").isNumeric().withMessage("Invalid salary"),
+            
 
         ];
 
