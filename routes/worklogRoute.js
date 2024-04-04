@@ -4,6 +4,7 @@ const router = express.Router();
 const worklogController = require("../controllers/workLogController");
 const { param, body, validationResult } = require("express-validator");
 const authorizeUser = require("../middlewares/authMiddleware");
+const upload = require("../multerConfig");
 
 // Middleware for checking validation results and sending an error response if needed
 const checkValidationResult = (req, res, next) => {
@@ -42,6 +43,17 @@ router.get(
   worklogController.getWorkLogByIdForWorkareaId
 );
 
-// Post worklogs for user
+// post users workLog
+router.post(
+  "/:userId/:workareaId",
+  [
+    validatedUserId,
+    validatedWorkareaId,
+  ],
+  checkValidationResult,
+  authorizeUser,
+  upload,
+  worklogController.postWorkLog
+);
 
 module.exports = router;

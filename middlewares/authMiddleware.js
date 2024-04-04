@@ -2,7 +2,8 @@ const authorizeUser = (req, res, next) => {
     if (!req.user) {
       return res.status(400).json({ message: "Bad Request: User not found in request" });
     }
-    const loggedInUserId = req.user[0].userId; // ID from authenticated user
+    console.log(req.user);
+    const loggedInUserId = req.user.id; // ID from authenticated user
     const requestedUserId = req.params.userId; // ID from the request parameters
     console.log(req.user);
     console.log(

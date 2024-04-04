@@ -79,7 +79,7 @@ passport.use(
 
 // JWT strategy for user
 passport.use(
-  'jwt-user',
+  "jwt-user",
   new JWTStrategy(
     {
       jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
@@ -87,9 +87,10 @@ passport.use(
     },
     async (jwtPayload, done) => {
       // Get user data from DB using userModel
-      console.log("user from token", jwtPayload);
       try {
-        const user = await getUserById(jwtPayload.userId);
+        const userArray = await getUserById(jwtPayload.id); // Assuming getUserById returns an array
+        const user = userArray[0]; // Extract the user object from the array
+        console.log("user from token", jwtPayload);
         return done(null, user);
       } catch (error) {
         return done(error);
@@ -100,7 +101,7 @@ passport.use(
 
 // JWT strategy for employee
 passport.use(
-  'jwt-employee',
+  "jwt-employee",
   new JWTStrategy(
     {
       jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
