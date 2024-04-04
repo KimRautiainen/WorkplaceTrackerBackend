@@ -1,6 +1,5 @@
 const request = require("supertest");
 const app = require("../app"); // Make sure this path matches the location of your app file
-
 // Mocking passport authentication to bypass it in tests
 jest.mock("../utils/passport", () => ({
   initialize: () => (req, res, next) => next(),
@@ -106,5 +105,4 @@ describe("Worklog API Tests", () => {
     expect(res.body.errors[1]).toHaveProperty("msg", "Workarea ID must be an integer");
   });
 });
-
 
