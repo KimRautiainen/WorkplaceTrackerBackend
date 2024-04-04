@@ -19,7 +19,7 @@ const getWorklogs = async (req, res) => {
 // get worklog by id
 const getWorklogById = async (req, res) => {
   try {
-    const worklog = await workLogModel.getWorklogById(req.params.id);
+    const worklog = await workLogModel.getWorklogById(req.params.userId);
     res.json(worklog);
   } catch (err) {
     res.status(500).json({ error: err.message });

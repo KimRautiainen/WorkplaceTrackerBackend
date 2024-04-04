@@ -5,6 +5,15 @@ const worklogController = require("../controllers/workLogController");
 const { param, body, validationResult } = require("express-validator");
 const authorizeUser = require("../middlewares/authMiddleware");
 
+// Middleware for checking validation results and sending an error response if needed
+const checkValidationResult = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+  next();
+};
+
 // Validate user id parameter
 const validatedUserId = param("userId")
   .isInt()
@@ -18,13 +27,21 @@ const validatedWorkareaId = param("workareaId")
 router.get("/", worklogController.getWorklogs);
 
 // get worklog by user id
-router.get("/:id", [validatedUserId], worklogController.getWorklogById);
+router.get(
+  "/:userId",
+  validatedUserId,
+  checkValidationResult,
+  worklogController.getWorklogById
+);
 
 // get worklog by user id for workareaId
 router.get(
   "/:userId/:workareaId",
   [validatedUserId, validatedWorkareaId],
+  checkValidationResult,
   worklogController.getWorkLogByIdForWorkareaId
 );
+
+// Post worklogs for user
 
 module.exports = router;

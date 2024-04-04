@@ -12,7 +12,7 @@ const getWorklogs = async () => {
         return rows;
     } catch (e) {
         console.log("error", e.message);
-        throw new Error("sql query failed");
+        throw new Error("sql query failed", e);
     }
 };
 
@@ -25,7 +25,7 @@ const getWorklogById = async (id) => {
         return rows;
     } catch (e) {
         console.log("error", e.message);
-        throw new Error("sql query failed");
+        throw new Error("sql query failed", e);
     }
 };
 
@@ -38,7 +38,7 @@ const getWorkLogByIdForWorkareaId = async (userId, workareaId) => {
         return rows;
     } catch (e) {
         console.log("error", e.message);
-        throw new Error("sql query failed");
+        throw new Error("sql query failed", e);
     }
 };
 
