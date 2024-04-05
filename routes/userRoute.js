@@ -9,5 +9,12 @@ const authorizeUser = require('../middlewares/authMiddleware')
 // Check token
 router.get("/token", userController.checkToken);
 
+// get all users
+router.get("/", userController.getUsers);
+
+// get user by id
+router.get("/:id", userController.getUserById);
+
+
 
 module.exports = router;

@@ -70,10 +70,22 @@ const checkEmail = async (email) => {
     }
   };
   
+  // get all users from the database
+const getUsers = async () => {
+  try {
+    const [rows] = await promisePool.execute("SELECT * FROM worker");
+    return rows;
+  } catch (e) {
+    console.log("error", e.message);
+    throw new Error("sql query failed", e);
+  }
+};
+
 
 module.exports = {
     getUserById,
     getUserLogin,
     checkEmail,
     insertWorker,
+    getUsers,
 };
