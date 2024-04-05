@@ -32,5 +32,7 @@ app.use('/auth', authRoute);
 
 app.use('/user', passport.authenticate('jwt-user', {session: false}), userRoute);
 
+app.use('/worklogs', passport.authenticate('jwt-user', {session: false}), require('./routes/worklogRoute'));
+
 
 module.exports = app;

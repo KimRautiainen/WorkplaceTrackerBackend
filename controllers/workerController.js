@@ -62,7 +62,28 @@ const checkToken = (req, res) => {
   res.json({ user: req.user });
 };
 
+// get all users 
+const getUsers = async (req, res) => {
+  try {
+    const users = await userModel.getUsers();
+    res.json(users);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+// get user by id
+const getUserById = async (req, res) => {
+  try {
+    const user = await userModel.getUserById(req.params.id);
+    res.json(user);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
 module.exports = {
   postUser,
   checkToken,
+  getUsers,
+  getUserById,
 };
