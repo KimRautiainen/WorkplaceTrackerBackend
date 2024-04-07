@@ -49,7 +49,7 @@ const checkEmail = async (email) => {
 
 const insertEmployee = async (employee) => {
     try {
-        const sql = `INSERT INTO company (businessId, address, name, email, phone, picture, password, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)`;
+        const sql = `INSERT INTO company (businessId, name, address, email, phone, picture, password, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)`;
 
         const [rows] = await promisePool.query(sql, [
             employee.businessId, // Assuming employee object has a businessId property
