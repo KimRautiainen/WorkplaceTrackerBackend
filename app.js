@@ -30,9 +30,14 @@ app.use(passport.initialize());
 // Use the authRoute for handling authentication-related routes
 app.use('/auth', authRoute);
 
+// user routes
 app.use('/user', passport.authenticate('jwt-user', {session: false}), userRoute);
 
+// Use the worklogRoute for handling worklog-related routes
 app.use('/worklogs', passport.authenticate('jwt-user', {session: false}), require('./routes/worklogRoute'));
+
+// Use the workAreaRoute for handling workArea-related routes
+app.use('/workAreas', passport.authenticate('jwt-user', {session: false}), require('./routes/workAreaRoute'));
 
 
 module.exports = app;
