@@ -27,9 +27,9 @@ const getWorkAreasForUser = async (userId) => {
     const query = `
             SELECT wa.* FROM workArea wa
             JOIN worker_workArea wwa ON wa.id = wwa.workArea_id
-            WHERE wwa.worker_id = ? AND wwa.is_active = TRUE
+            WHERE wwa.worker_id = ? AND wwa.is_active = 1
         `;
-    const [rows] = await db.execute(query, [userId]);
+    const [rows] = await promisePool.execute(query, [userId]);
     return rows;
   } catch (error) {
     console.error("Error in getWorkAreasForUser:", error);
@@ -52,7 +52,7 @@ const createWorkArea = async (workAreaDetails) => {
       radius,
       access_code,
     } = workAreaDetails;
-    const [result] = await db.execute(query, [
+    const [result] = await promisePool.execute(query, [
       company_id,
       name,
       description,
@@ -71,9 +71,9 @@ const reguestJoinWorkArea = async (workerId, access_code) => {
   try {
     const query = `
             INSERT INTO worker_workArea (worker_id, workArea_id, is_active)
-            VALUES (?, (SELECT id FROM workArea WHERE access_code = ?), FALSE)
+            VALUES (?, (SELECT id FROM workArea WHERE access_code = ?), 0)
         `;
-    const [result] = await db.execute(query, [workerId, access_code]);
+    const [result] = await promisePool.execute(query, [workerId, access_code]);
     return result;
   } catch (error) {
     console.error("Error in reguestJoinWorkArea:", error);
@@ -85,12 +85,31 @@ const approveJoinRequest = async (workerId, workAreaId) => {
     const query = `
             UPDATE worker_workArea
             SET is_active = TRUE
-            WHERE worker_id = ? AND workArea_id = ? AND is_active = FALSE
+            WHERE worker_id = ? AND workArea_id = ? AND is_active = 0
         `;
-    const [result] = await db.execute(query, [workerId, workAreaId]);
+    const [result] = await promisePool.execute(query, [workerId, workAreaId]);
     return result;
   } catch (error) {
     console.error("Error in approveJoinRequest:", error);
+    throw error;
+  }
+};
+
+// get all workArea join requests
+const getJoinRequests = async () => {
+  try {
+    const query = `
+            SELECT wwa.*, wa.name AS workArea_name, w.name AS worker_name
+            FROM worker_workArea wwa
+            JOIN workArea wa ON wwa.workArea_id = wa.id
+            JOIN worker w ON wwa.worker_id = w.id
+            WHERE wwa.is_active = 0
+        `;
+    const [rows] = await promisePool.execute(query);
+    console.log("rows", rows);
+    return rows;
+  } catch (error) {
+    console.error("Error in getJoinRequests:", error);
     throw error;
   }
 };
@@ -101,4 +120,5 @@ module.exports = {
   createWorkArea,
   reguestJoinWorkArea,
   approveJoinRequest,
+  getJoinRequests,
 };
