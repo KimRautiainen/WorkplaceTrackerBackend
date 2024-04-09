@@ -113,6 +113,19 @@ const getJoinRequests = async () => {
     throw error;
   }
 };
+// get workArea by company id
+const getWorkAreasByCompanyId = async (companyId) => {
+  try {
+    const query = `
+            SELECT * FROM workArea WHERE company_id = ?
+        `;
+    const [rows] = await promisePool.execute(query, [companyId]);
+    return rows;
+  } catch (error) {
+    console.error("Error in getWorkAreasByCompanyId:", error);
+    throw error;
+  }
+};
 module.exports = {
   getWorkAreas,
   getWorkAreaById,
@@ -121,4 +134,5 @@ module.exports = {
   reguestJoinWorkArea,
   approveJoinRequest,
   getJoinRequests,
+  getWorkAreasByCompanyId,
 };
