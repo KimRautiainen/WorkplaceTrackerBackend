@@ -43,7 +43,7 @@ const createWorkArea = async (req, res) => {
       radius: req.body.radius,
       access_code: req.body.access_code,
     };
-
+    console.log("workArea", workArea);
     const result = await workAreaModel.createWorkArea(workArea);
     res.status(201).json({ message: "Work area created" });
   } catch (error) {
@@ -69,7 +69,7 @@ const reguestJoinWorkArea = async (req, res) => {
 
 const approveJoinRequest = async (req, res) => {
   try {
-    const { workerId, workAreaId } = req.body; // Assuming these are provided in the request body
+    const { workerId, workAreaId } = req.body; 
     const result = await workAreaModel.approveJoinRequest(workerId, workAreaId);
     if (result.affectedRows > 0) {
       res.json({ message: "Work area join request approved successfully." });
@@ -83,6 +83,19 @@ const approveJoinRequest = async (req, res) => {
     res.status(500).send("Internal server error");
   }
 };
+
+// get all workArea join requests
+const getJoinRequests = async (req, res) => {
+  try {
+    const joinRequests = await workAreaModel.getJoinRequests();
+    console.log("joinRequests", joinRequests);
+    res.json(joinRequests);
+    console.log("joinRequests", joinRequests);
+  } catch (error) {
+    console.error("Error in getJoinRequests controller:", error);
+    res.status(500).send("Internal server error");
+  }
+};
 module.exports = {
   getWorkAreas,
   getWorkAreaById,
@@ -90,4 +103,5 @@ module.exports = {
   createWorkArea,
   reguestJoinWorkArea,
   approveJoinRequest,
+  getJoinRequests,
 };
