@@ -30,6 +30,8 @@ router.post("/", workAreaController.createWorkArea);
 
 router.post("/reguestJoinWorkArea/:userId", authorizeUser, workAreaController.reguestJoinWorkArea);
 
+// get workArea by company id
+router.get("/company/:companyId", workAreaController.getWorkAreasByCompanyId);
 
 
 module.exports = router;

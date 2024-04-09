@@ -96,6 +96,17 @@ const getJoinRequests = async (req, res) => {
     res.status(500).send("Internal server error");
   }
 };
+// get workArea by company id
+const getWorkAreasByCompanyId = async (req, res) => {
+  try {
+    const companyId = req.params.companyId;
+    const workAreas = await workAreaModel.getWorkAreasByCompanyId(companyId);
+    res.json(workAreas);
+  } catch (error) {
+    console.error("Error in getWorkAreasByCompanyId controller:", error);
+    res.status(500).send("Internal server error");
+  }
+};
 module.exports = {
   getWorkAreas,
   getWorkAreaById,
@@ -104,4 +115,5 @@ module.exports = {
   reguestJoinWorkArea,
   approveJoinRequest,
   getJoinRequests,
+  getWorkAreasByCompanyId,
 };
