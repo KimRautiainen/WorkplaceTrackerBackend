@@ -73,10 +73,20 @@ const postWorkLog = async (req, res) => {
       res.status(500).json({ error: error.message });
   }
 };
+// get all worklogs for companyId
+const getWorklogsByCompanyId = async (req, res) => {
+  try {
+    const worklogs = await workLogModel.getWorklogsByCompanyId(req.params.companyId);
+    res.json(worklogs);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
 
 module.exports = {
   getWorklogs,
   getWorklogById,
   getWorkLogByIdForWorkareaId,
   postWorkLog, 
+  getWorklogsByCompanyId,
 };

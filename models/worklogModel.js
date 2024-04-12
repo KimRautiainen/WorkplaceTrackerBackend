@@ -71,7 +71,19 @@ const insertWorkLog = async (workLog) => {
     throw new Error("sql query failed", e);
   }
 };
-
+// get all worklogs for companyId
+const getWorklogsByCompanyId = async (companyId) => {
+  try {
+    const [rows] = await promisePool.execute(
+      "SELECT * FROM work_log WHERE company_id = ?",
+      [companyId]
+    );
+    return rows;
+  } catch (e) {
+    console.log("error", e.message);
+    throw new Error("sql query failed", e);
+  }
+}
 
 module.exports = {
   getWorklogs,
@@ -79,4 +91,5 @@ module.exports = {
   getWorkLogByIdForWorkareaId,
   getCompanyIdByWorkAreaId,
   insertWorkLog,
+  getWorklogsByCompanyId,
 };
