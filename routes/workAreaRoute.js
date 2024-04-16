@@ -6,6 +6,7 @@ const { param, body, validationResult } = require("express-validator");
 const authorizeUser = require("../middlewares/authMiddleware");
 const upload = require("../multerConfig");
 
+
 const workAreaValidation = [
 
 ];
@@ -26,7 +27,7 @@ router.get("/userWorkAreas/:userId", workAreaController.getWorkAreasForUser);
 
 
 // create workArea
-router.post("/", workAreaController.createWorkArea);
+router.post("/createWorkArea", workAreaController.createWorkArea);
 
 router.post("/reguestJoinWorkArea/:userId", authorizeUser, workAreaController.reguestJoinWorkArea);
 

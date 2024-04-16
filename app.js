@@ -5,6 +5,7 @@ const passport = require("./utils/passport");
 const authRoute = require("./routes/authRoute");
 const app = express();
 const userRoute = require("./routes/userRoute");
+const { authenticateDualStrategy } = require("./middlewares/dualAuthMiddleware");
 
 // Log middleware
 app.use((req, res, next) => {
@@ -37,7 +38,7 @@ app.use('/user', passport.authenticate('jwt-user', {session: false}), userRoute)
 app.use('/worklogs', passport.authenticate('jwt-user', {session: false}), require('./routes/worklogRoute'));
 
 // Use the workAreaRoute for handling workArea-related routes
-app.use('/workAreas', passport.authenticate('jwt-user', {session: false}), require('./routes/workAreaRoute'));
+app.use('/workAreas', authenticateDualStrategy, require('./routes/workAreaRoute'));
 
 
 module.exports = app;
