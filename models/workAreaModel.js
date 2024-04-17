@@ -1,6 +1,8 @@
 "use strict";
 const pool = require("../Db");
 const promisePool = pool.promise();
+const crypto = require('crypto');
+
 
 const getWorkAreas = async () => {
   try {
@@ -37,21 +39,32 @@ const getWorkAreasForUser = async (userId) => {
   }
 };
 
+const generateUniqueAccessCode = async () => {
+  let isUnique = false;
+  let access_code;
+  while (!isUnique) {
+    access_code = crypto.randomBytes(8).toString("hex");
+    const [rows] = await promisePool.query(
+      "SELECT id FROM workArea WHERE access_code = ?",
+      [access_code]
+    );
+    if (rows.length === 0) {
+      isUnique = true;
+    }
+  }
+  return access_code;
+};
+
 const createWorkArea = async (workAreaDetails) => {
+  const { company_id, name, description, latitude, longitude, radius } =
+    workAreaDetails;
+  const access_code = await generateUniqueAccessCode();
+
   try {
     const query = `
-            INSERT INTO workArea (company_id, name, description, latitude, longitude, radius, access_code)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
-        `;
-    const {
-      company_id,
-      name,
-      description,
-      latitude,
-      longitude,
-      radius,
-      access_code,
-    } = workAreaDetails;
+      INSERT INTO workArea (company_id, name, description, latitude, longitude, radius, access_code)
+      VALUES (?, ?, ?, ?, ?, ?, ?)
+    `;
     const [result] = await promisePool.execute(query, [
       company_id,
       name,
@@ -140,6 +153,54 @@ const deleteRequest = async (workerId, workAreaId) => {
     throw error;
   }
 };
+const findByAccessCode = async (access_code) => {
+  try {
+    const query = "SELECT * FROM workArea WHERE access_code = ?";
+    const [rows] = await promisePool.execute(query, [access_code]);
+    return rows[0]; // Assuming access code is unique, return the first result
+  } catch (error) {
+    console.error("Error in findByAccessCode:", error);
+    throw error;
+  }
+};
+const checkExistingJoinRequest = async (workerId, workAreaId) => {
+  try {
+    const query = `
+      SELECT * FROM worker_workArea
+      WHERE worker_id = ? AND workArea_id = ? AND is_active = 0
+    `;
+    const [rows] = await promisePool.execute(query, [workerId, workAreaId]);
+    return rows.length > 0; // Returns true if there's an existing join request
+  } catch (error) {
+    console.error("Error in checkExistingJoinRequest:", error);
+    throw error;
+  }
+};
+const checkWorkerCompanyLink = async (workerId, companyId) => {
+  try {
+    const query = `
+      SELECT * FROM worker_company
+      WHERE worker_id = ? AND company_id = ?
+    `;
+    const [rows] = await promisePool.execute(query, [workerId, companyId]);
+    return rows.length > 0; // Returns true if there's an existing link
+  } catch (error) {
+    console.error("Error in checkWorkerCompanyLink:", error);
+    throw error;
+  }
+};
+const createWorkerCompanyLink = async (workerId, companyId) => {
+  try {
+    const query = `
+      INSERT INTO worker_company (worker_id, company_id)
+      VALUES (?, ?)
+    `;
+    await promisePool.execute(query, [workerId, companyId]);
+  } catch (error) {
+    console.error("Error in createWorkerCompanyLink:", error);
+    throw error;
+  }
+};
 module.exports = {
   getWorkAreas,
   getWorkAreaById,
@@ -150,4 +211,8 @@ module.exports = {
   getJoinRequests,
   getWorkAreasByCompanyId,
   deleteRequest,
+  findByAccessCode,
+  checkExistingJoinRequest,
+  checkWorkerCompanyLink,
+  createWorkerCompanyLink,
 };
