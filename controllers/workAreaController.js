@@ -41,46 +41,55 @@ const createWorkArea = async (req, res) => {
       latitude: req.body.latitude,
       longitude: req.body.longitude,
       radius: req.body.radius,
-      access_code: req.body.access_code,
     };
-    console.log("workArea", workArea);
     const result = await workAreaModel.createWorkArea(workArea);
-    res.status(201).json({ message: "Work area created" });
+    res.status(201).json({ message: "Work area created successfully", accessCode: result.access_code });
   } catch (error) {
     console.error("Error in createWorkArea controller:", error);
     res.status(500).send("Internal server error");
   }
 };
 
+
 const reguestJoinWorkArea = async (req, res) => {
+  const userId = req.params.userId;
+  const access_code = req.body.access_code;
   try {
-    const workerId = req.params.userId;
-    const access_code = req.body.access_code;
-    const result = await workAreaModel.reguestJoinWorkArea(
-      workerId,
-      access_code
-    );
-    res.status(201).json({ message: "Request sent. Waiting to be approved" });
+    const workArea = await workAreaModel.findByAccessCode(access_code);
+    if (!workArea) {
+      return res.status(404).json({ message: "Invalid access code" });
+    }
+    const joinExists = await workAreaModel.checkExistingJoinRequest(userId, workArea.id);
+    if (joinExists) {
+      return res.status(409).json({ message: "Join request already exists." });
+    }
+    const result = await workAreaModel.requestJoinWorkArea(userId, workArea.id);
+    res.status(201).json({ message: "Join request sent. Waiting for approval." });
   } catch (error) {
-    console.error("Error in reguestJoinWorkArea controller:", error);
+    console.error("Error in requestJoinWorkArea controller:", error);
     res.status(500).send("Internal server error");
   }
 };
 
 const approveJoinRequest = async (req, res) => {
+  const { workerId, workAreaId } = req.body;
   try {
-    const { workerId, workAreaId } = req.body; 
-    const result = await workAreaModel.approveJoinRequest(workerId, workAreaId);
-    if (result.affectedRows > 0) {
+    const updateResult = await workAreaModel.approveJoinRequest(workerId, workAreaId);
+    if (updateResult.affectedRows > 0) {
       res.json({ message: "Work area join request approved successfully." });
     } else {
-      res.status(404).json({
-        message: "No pending request found for this worker and work area.",
-      });
+      res.status(404).json({ message: "No pending request found for this worker and work area." });
     }
   } catch (error) {
     console.error("Error in approveJoinRequest controller:", error);
     res.status(500).send("Internal server error");
+  }
+};
+
+const linkWorkerToCompany = async (workerId, companyId) => {
+  const exists = await workAreaModel.checkWorkerCompanyLink(workerId, companyId);
+  if (!exists) {
+    await workAreaModel.createWorkerCompanyLink(workerId, companyId);
   }
 };
 
@@ -135,4 +144,5 @@ module.exports = {
   getJoinRequests,
   getWorkAreasByCompanyId,
   deleteRequest,
+  linkWorkerToCompany,
 };

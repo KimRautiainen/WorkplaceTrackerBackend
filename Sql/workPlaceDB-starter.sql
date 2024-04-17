@@ -110,3 +110,7 @@ CREATE TABLE `workArea_files` (
     `uploaded_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- When the file was uploaded
     FOREIGN KEY (`workArea_id`) REFERENCES `workArea`(`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- add approved column to worker_workArea table to keep isActive and approved separate
+-- use isActive to idnicate if the worker is in the workArea
+ALTER TABLE worker_workArea ADD COLUMN approved BOOLEAN NOT NULL DEFAULT FALSE;
