@@ -7,6 +7,7 @@ const authorizeUser = require("../middlewares/authMiddleware");
 const upload = require("../multerConfig");
 
 
+
 const workAreaValidation = [
 
 ];

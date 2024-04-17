@@ -63,7 +63,7 @@ const reguestJoinWorkArea = async (req, res) => {
     if (joinExists) {
       return res.status(409).json({ message: "Join request already exists." });
     }
-    const result = await workAreaModel.requestJoinWorkArea(userId, workArea.id);
+    const result = await workAreaModel.requestJoinWorkArea(userId, workArea.id); // Passing workArea.id
     res.status(201).json({ message: "Join request sent. Waiting for approval." });
   } catch (error) {
     console.error("Error in requestJoinWorkArea controller:", error);

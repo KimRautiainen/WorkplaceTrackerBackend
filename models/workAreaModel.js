@@ -29,7 +29,7 @@ const getWorkAreasForUser = async (userId) => {
     const query = `
             SELECT wa.* FROM workArea wa
             JOIN worker_workArea wwa ON wa.id = wwa.workArea_id
-            WHERE wwa.worker_id = ? AND wwa.is_active = 1
+            WHERE wwa.worker_id = ? AND wwa.approved = 1
         `;
     const [rows] = await promisePool.execute(query, [userId]);
     return rows;
@@ -80,16 +80,16 @@ const createWorkArea = async (workAreaDetails) => {
     throw error;
   }
 };
-const reguestJoinWorkArea = async (workerId, access_code) => {
+const requestJoinWorkArea = async (workerId, workAreaId) => {
   try {
     const query = `
-            INSERT INTO worker_workArea (worker_id, workArea_id, is_active)
-            VALUES (?, (SELECT id FROM workArea WHERE access_code = ?), 0)
-        `;
-    const [result] = await promisePool.execute(query, [workerId, access_code]);
+      INSERT INTO worker_workArea (worker_id, workArea_id, is_active)
+      VALUES (?, ?, 0)
+    `;
+    const [result] = await promisePool.execute(query, [workerId, workAreaId]);
     return result;
   } catch (error) {
-    console.error("Error in reguestJoinWorkArea:", error);
+    console.error("Error in requestJoinWorkArea:", error);
     throw error;
   }
 };
@@ -167,10 +167,10 @@ const checkExistingJoinRequest = async (workerId, workAreaId) => {
   try {
     const query = `
       SELECT * FROM worker_workArea
-      WHERE worker_id = ? AND workArea_id = ? AND is_active = 0
+      WHERE worker_id = ? AND workArea_id = ?
     `;
     const [rows] = await promisePool.execute(query, [workerId, workAreaId]);
-    return rows.length > 0; // Returns true if there's an existing join request
+    return rows.length > 0; // Returns true if there's any existing join request
   } catch (error) {
     console.error("Error in checkExistingJoinRequest:", error);
     throw error;
@@ -206,7 +206,7 @@ module.exports = {
   getWorkAreaById,
   getWorkAreasForUser,
   createWorkArea,
-  reguestJoinWorkArea,
+  requestJoinWorkArea,
   approveJoinRequest,
   getJoinRequests,
   getWorkAreasByCompanyId,
