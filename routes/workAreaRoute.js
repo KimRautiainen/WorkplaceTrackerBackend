@@ -34,5 +34,8 @@ router.post("/reguestJoinWorkArea/:userId", authorizeUser, workAreaController.re
 // get workArea by company id
 router.get("/company/:companyId", workAreaController.getWorkAreasByCompanyId);
 
+// delete workAreaRequest
+router.delete("/deleteRequest/:workerId/:workAreaId", workAreaController.deleteRequest);
+
 
 module.exports = router;

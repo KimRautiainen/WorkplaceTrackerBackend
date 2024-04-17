@@ -107,6 +107,24 @@ const getWorkAreasByCompanyId = async (req, res) => {
     res.status(500).send("Internal server error");
   }
 };
+// delete workAreaRequest
+const deleteRequest = async (req, res) => {
+  try {
+    const workerId = req.params.workerId;
+    const workAreaId = req.params.workAreaId;
+    const result = await workAreaModel.deleteRequest(workerId, workAreaId);
+    if (result.affectedRows > 0) {
+      res.json({ message: "Request deleted successfully." });
+    } else {
+      res.status(404).json({
+        message: "No pending request found for this worker and work area.",
+      });
+    }
+  } catch (error) {
+    console.error("Error in deleteRequest controller:", error);
+    res.status(500).send("Internal server error");
+  }
+};
 module.exports = {
   getWorkAreas,
   getWorkAreaById,
@@ -116,4 +134,5 @@ module.exports = {
   approveJoinRequest,
   getJoinRequests,
   getWorkAreasByCompanyId,
+  deleteRequest,
 };

@@ -126,6 +126,20 @@ const getWorkAreasByCompanyId = async (companyId) => {
     throw error;
   }
 };
+// delete workAreaRequest
+const deleteRequest = async (workerId, workAreaId) => {
+  try {
+    const query = `
+            DELETE FROM worker_workArea
+            WHERE worker_id = ? AND workArea_id = ?
+        `;
+    const [result] = await promisePool.execute(query, [workerId, workAreaId]);
+    return result;
+  } catch (error) {
+    console.error("Error in deleteRequest:", error);
+    throw error;
+  }
+};
 module.exports = {
   getWorkAreas,
   getWorkAreaById,
@@ -135,4 +149,5 @@ module.exports = {
   approveJoinRequest,
   getJoinRequests,
   getWorkAreasByCompanyId,
+  deleteRequest,
 };

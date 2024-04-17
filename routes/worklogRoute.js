@@ -17,12 +17,18 @@ const checkValidationResult = (req, res, next) => {
 
 // Validate user id parameter
 const validatedUserId = param("userId")
-  .isInt()
-  .withMessage("User ID must be an integer");
+.isInt()
+.withMessage("User ID must be an integer");
 
 const validatedWorkareaId = param("workareaId")
-  .isInt()
-  .withMessage("Workarea ID must be an integer");
+.isInt()
+.withMessage("Workarea ID must be an integer");
+
+// get all worklogs for companyId
+router.get(
+  "/company/:companyId",
+  worklogController.getWorklogsByCompanyId
+);
 
 // get all worklogs
 router.get("/", worklogController.getWorklogs);
