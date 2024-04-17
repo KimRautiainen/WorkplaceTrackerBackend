@@ -108,17 +108,17 @@ const approveJoinRequest = async (workerId, workAreaId) => {
   }
 };
 
-// get all workArea join requests
-const getJoinRequests = async () => {
+// get all workArea join requests for a specific company
+const getJoinRequests = async (companyId) => {
   try {
     const query = `
-            SELECT wwa.*, wa.name AS workArea_name, w.name AS worker_name
-            FROM worker_workArea wwa
-            JOIN workArea wa ON wwa.workArea_id = wa.id
-            JOIN worker w ON wwa.worker_id = w.id
-            WHERE wwa.is_active = 0
-        `;
-    const [rows] = await promisePool.execute(query);
+      SELECT wwa.*, wa.name AS workArea_name, w.name AS worker_name
+      FROM worker_workArea wwa
+      JOIN workArea wa ON wwa.workArea_id = wa.id
+      JOIN worker w ON wwa.worker_id = w.id
+      WHERE wwa.approved = 0 AND wa.company_id = ?
+    `;
+    const [rows] = await promisePool.execute(query, [companyId]);
     console.log("rows", rows);
     return rows;
   } catch (error) {

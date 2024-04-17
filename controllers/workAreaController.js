@@ -93,13 +93,14 @@ const linkWorkerToCompany = async (workerId, companyId) => {
   }
 };
 
-// get all workArea join requests
+// get all workArea join requests for a specific company
 const getJoinRequests = async (req, res) => {
+  const companyId = req.user.id // Assuming this is how you access the logged-in user's company ID
+  console.log("companyId", companyId);
   try {
-    const joinRequests = await workAreaModel.getJoinRequests();
+    const joinRequests = await workAreaModel.getJoinRequests(companyId);
     console.log("joinRequests", joinRequests);
     res.json(joinRequests);
-    console.log("joinRequests", joinRequests);
   } catch (error) {
     console.error("Error in getJoinRequests controller:", error);
     res.status(500).send("Internal server error");
