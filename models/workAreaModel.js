@@ -97,8 +97,8 @@ const approveJoinRequest = async (workerId, workAreaId) => {
   try {
     const query = `
             UPDATE worker_workArea
-            SET is_active = TRUE
-            WHERE worker_id = ? AND workArea_id = ? AND is_active = 0
+            SET approved = TRUE
+            WHERE worker_id = ? AND workArea_id = ? AND approved = 0
         `;
     const [result] = await promisePool.execute(query, [workerId, workAreaId]);
     return result;
