@@ -29,7 +29,7 @@ const getWorkAreasForUser = async (userId) => {
     const query = `
             SELECT wa.* FROM workArea wa
             JOIN worker_workArea wwa ON wa.id = wwa.workArea_id
-            WHERE wwa.worker_id = ? AND wwa.is_active = 1
+            WHERE wwa.worker_id = ? AND wwa.approved = 1
         `;
     const [rows] = await promisePool.execute(query, [userId]);
     return rows;
@@ -80,45 +80,64 @@ const createWorkArea = async (workAreaDetails) => {
     throw error;
   }
 };
-const reguestJoinWorkArea = async (workerId, access_code) => {
+const requestJoinWorkArea = async (workerId, workAreaId) => {
   try {
     const query = `
-            INSERT INTO worker_workArea (worker_id, workArea_id, is_active)
-            VALUES (?, (SELECT id FROM workArea WHERE access_code = ?), 0)
-        `;
-    const [result] = await promisePool.execute(query, [workerId, access_code]);
+      INSERT INTO worker_workArea (worker_id, workArea_id, is_active)
+      VALUES (?, ?, 0)
+    `;
+    const [result] = await promisePool.execute(query, [workerId, workAreaId]);
     return result;
   } catch (error) {
-    console.error("Error in reguestJoinWorkArea:", error);
+    console.error("Error in requestJoinWorkArea:", error);
     throw error;
   }
 };
 const approveJoinRequest = async (workerId, workAreaId) => {
   try {
-    const query = `
-            UPDATE worker_workArea
-            SET is_active = TRUE
-            WHERE worker_id = ? AND workArea_id = ? AND is_active = 0
-        `;
-    const [result] = await promisePool.execute(query, [workerId, workAreaId]);
-    return result;
+    // First, approve the join request
+    const updateQuery = `
+      UPDATE worker_workArea
+      SET approved = TRUE
+      WHERE worker_id = ? AND workArea_id = ? AND approved = 0
+    `;
+    const [updateResult] = await promisePool.execute(updateQuery, [workerId, workAreaId]);
+    
+    if (updateResult.affectedRows > 0) {
+      // If the join request was successfully approved, fetch the company ID associated with the workArea
+      const [companyRows] = await promisePool.query(
+        "SELECT company_id FROM workArea WHERE id = ?", [workAreaId]
+      );
+      if (companyRows.length > 0) {
+        const companyId = companyRows[0].company_id;
+        // Check if a link already exists, if not, create one
+        const linkExists = await checkWorkerCompanyLink(workerId, companyId);
+        if (!linkExists) {
+          await createWorkerCompanyLink(workerId, companyId);
+        }
+      }
+      return { message: "Join request approved and company link created/verified.", details: updateResult };
+    } else {
+      return { message: "No join request to approve or already approved." };
+    }
   } catch (error) {
     console.error("Error in approveJoinRequest:", error);
     throw error;
   }
 };
 
-// get all workArea join requests
-const getJoinRequests = async () => {
+
+// get all workArea join requests for a specific company
+const getJoinRequests = async (companyId) => {
   try {
     const query = `
-            SELECT wwa.*, wa.name AS workArea_name, w.name AS worker_name
-            FROM worker_workArea wwa
-            JOIN workArea wa ON wwa.workArea_id = wa.id
-            JOIN worker w ON wwa.worker_id = w.id
-            WHERE wwa.is_active = 0
-        `;
-    const [rows] = await promisePool.execute(query);
+      SELECT wwa.*, wa.name AS workArea_name, w.name AS worker_name
+      FROM worker_workArea wwa
+      JOIN workArea wa ON wwa.workArea_id = wa.id
+      JOIN worker w ON wwa.worker_id = w.id
+      WHERE wwa.approved = 0 AND wa.company_id = ?
+    `;
+    const [rows] = await promisePool.execute(query, [companyId]);
     console.log("rows", rows);
     return rows;
   } catch (error) {
@@ -167,10 +186,10 @@ const checkExistingJoinRequest = async (workerId, workAreaId) => {
   try {
     const query = `
       SELECT * FROM worker_workArea
-      WHERE worker_id = ? AND workArea_id = ? AND is_active = 0
+      WHERE worker_id = ? AND workArea_id = ?
     `;
     const [rows] = await promisePool.execute(query, [workerId, workAreaId]);
-    return rows.length > 0; // Returns true if there's an existing join request
+    return rows.length > 0; // Returns true if there's any existing join request
   } catch (error) {
     console.error("Error in checkExistingJoinRequest:", error);
     throw error;
@@ -206,7 +225,7 @@ module.exports = {
   getWorkAreaById,
   getWorkAreasForUser,
   createWorkArea,
-  reguestJoinWorkArea,
+  requestJoinWorkArea,
   approveJoinRequest,
   getJoinRequests,
   getWorkAreasByCompanyId,

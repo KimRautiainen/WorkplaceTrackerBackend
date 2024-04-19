@@ -7,6 +7,7 @@ const authorizeUser = require("../middlewares/authMiddleware");
 const upload = require("../multerConfig");
 
 
+
 const workAreaValidation = [
 
 ];
@@ -29,6 +30,7 @@ router.get("/userWorkAreas/:userId", workAreaController.getWorkAreasForUser);
 // create workArea
 router.post("/createWorkArea", workAreaController.createWorkArea);
 
+// request to join workArea
 router.post("/reguestJoinWorkArea/:userId", authorizeUser, workAreaController.reguestJoinWorkArea);
 
 // get workArea by company id
