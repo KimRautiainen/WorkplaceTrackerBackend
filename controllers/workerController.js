@@ -38,8 +38,9 @@ const postUser = async (req, res) => {
     email: req.body.email,
     phone: req.body.phone,
     picture: req.file ? req.file.filename : "", // Handle the case where a file might not be uploaded
+    salary: req.body.salary,
     password: password, // Hashed password for storage
-    // Note: 'department', 'position', and company associations will be handled separately
+    
   };
 
   try {
