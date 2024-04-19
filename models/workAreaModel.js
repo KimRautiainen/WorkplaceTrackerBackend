@@ -95,18 +95,37 @@ const requestJoinWorkArea = async (workerId, workAreaId) => {
 };
 const approveJoinRequest = async (workerId, workAreaId) => {
   try {
-    const query = `
-            UPDATE worker_workArea
-            SET approved = TRUE
-            WHERE worker_id = ? AND workArea_id = ? AND approved = 0
-        `;
-    const [result] = await promisePool.execute(query, [workerId, workAreaId]);
-    return result;
+    // First, approve the join request
+    const updateQuery = `
+      UPDATE worker_workArea
+      SET approved = TRUE
+      WHERE worker_id = ? AND workArea_id = ? AND approved = 0
+    `;
+    const [updateResult] = await promisePool.execute(updateQuery, [workerId, workAreaId]);
+    
+    if (updateResult.affectedRows > 0) {
+      // If the join request was successfully approved, fetch the company ID associated with the workArea
+      const [companyRows] = await promisePool.query(
+        "SELECT company_id FROM workArea WHERE id = ?", [workAreaId]
+      );
+      if (companyRows.length > 0) {
+        const companyId = companyRows[0].company_id;
+        // Check if a link already exists, if not, create one
+        const linkExists = await checkWorkerCompanyLink(workerId, companyId);
+        if (!linkExists) {
+          await createWorkerCompanyLink(workerId, companyId);
+        }
+      }
+      return { message: "Join request approved and company link created/verified.", details: updateResult };
+    } else {
+      return { message: "No join request to approve or already approved." };
+    }
   } catch (error) {
     console.error("Error in approveJoinRequest:", error);
     throw error;
   }
 };
+
 
 // get all workArea join requests for a specific company
 const getJoinRequests = async (companyId) => {
