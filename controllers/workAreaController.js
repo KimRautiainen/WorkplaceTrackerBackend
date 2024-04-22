@@ -78,7 +78,7 @@ const approveJoinRequest = async (req, res) => {
     if (updateResult.affectedRows > 0) {
       res.json({ message: "Work area join request approved successfully." });
     } else {
-      res.status(404).json({ message: "No pending request found for this worker and work area." });
+      res.json({ message: "No pending request found for this worker and work area." });
     }
   } catch (error) {
     console.error("Error in approveJoinRequest controller:", error);

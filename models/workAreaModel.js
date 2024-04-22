@@ -116,16 +116,23 @@ const approveJoinRequest = async (workerId, workAreaId) => {
           await createWorkerCompanyLink(workerId, companyId);
         }
       }
-      return { message: "Join request approved and company link created/verified.", details: updateResult };
+      return {
+        message: "Join request approved and company link created/verified.",
+        affectedRows: updateResult.affectedRows,
+        details: updateResult
+      };
     } else {
-      return { message: "No join request to approve or already approved." };
+      return {
+        message: "No join request to approve or already approved.",
+        affectedRows: updateResult.affectedRows,
+        details: updateResult
+      };
     }
   } catch (error) {
     console.error("Error in approveJoinRequest:", error);
     throw error;
   }
 };
-
 
 // get all workArea join requests for a specific company
 const getJoinRequests = async (companyId) => {
@@ -211,8 +218,8 @@ const checkWorkerCompanyLink = async (workerId, companyId) => {
 const createWorkerCompanyLink = async (workerId, companyId) => {
   try {
     const query = `
-      INSERT INTO worker_company (worker_id, company_id)
-      VALUES (?, ?)
+      INSERT INTO worker_company (worker_id, company_id, is_approved)
+      VALUES (?, ?, 1)
     `;
     await promisePool.execute(query, [workerId, companyId]);
   } catch (error) {
