@@ -152,12 +152,18 @@ const getJoinRequests = async (companyId) => {
     throw error;
   }
 };
-// get workArea by company id
+// get workArea by company id and activeUsers / total users 
 const getWorkAreasByCompanyId = async (companyId) => {
   try {
     const query = `
-            SELECT * FROM workArea WHERE company_id = ?
-        `;
+      SELECT wa.id, wa.name, wa.description, wa.latitude, wa.longitude, wa.radius, wa.access_code, wa.created_at,
+             SUM(wwa.is_active = 1) AS active_users,  
+             COUNT(wwa.worker_id) AS total_users       
+      FROM workArea wa
+      LEFT JOIN worker_workArea wwa ON wa.id = wwa.workArea_id
+      WHERE wa.company_id = ?
+      GROUP BY wa.id
+    `;
     const [rows] = await promisePool.execute(query, [companyId]);
     return rows;
   } catch (error) {
@@ -165,6 +171,7 @@ const getWorkAreasByCompanyId = async (companyId) => {
     throw error;
   }
 };
+
 // delete workAreaRequest
 const deleteRequest = async (workerId, workAreaId) => {
   try {
