@@ -39,5 +39,8 @@ router.get("/company/:companyId", workAreaController.getWorkAreasByCompanyId);
 // delete workAreaRequest
 router.delete("/deleteRequest/:workerId/:workAreaId", workAreaController.deleteRequest);
 
+// get workArea requests by worker id
+router.get("/requests/:workerId", workAreaController.getWorkAreaRequests);
+
 
 module.exports = router;

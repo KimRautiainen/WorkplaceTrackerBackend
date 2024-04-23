@@ -234,6 +234,23 @@ const createWorkerCompanyLink = async (workerId, companyId) => {
     throw error;
   }
 };
+// get workArea requests by worker id
+const getWorkAreaRequests = async (workerId) => {
+  try {
+    const query = `
+      SELECT wwa.*, wa.name AS workArea_name
+      FROM worker_workArea wwa
+      JOIN workArea wa ON wwa.workArea_id = wa.id
+      WHERE wwa.worker_id = ?
+    `;
+    const [rows] = await promisePool.execute(query, [workerId]);
+    return rows;
+  } catch (error) {
+    console.error("Error in getWorkAreaRequests:", error);
+    throw error;
+  }
+}; 
+
 module.exports = {
   getWorkAreas,
   getWorkAreaById,
@@ -248,4 +265,5 @@ module.exports = {
   checkExistingJoinRequest,
   checkWorkerCompanyLink,
   createWorkerCompanyLink,
+  getWorkAreaRequests,
 };

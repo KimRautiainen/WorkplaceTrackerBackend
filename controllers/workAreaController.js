@@ -135,6 +135,18 @@ const deleteRequest = async (req, res) => {
     res.status(500).send("Internal server error");
   }
 };
+
+// get workArea requests by worker id
+const getWorkAreaRequests = async (req, res) => {
+  const workerId = req.params.workerId;
+  try {
+    const requests = await workAreaModel.getWorkAreaRequests(workerId);
+    res.json(requests);
+  } catch (error) {
+    console.error("Error in getWorkAreaRequests controller:", error);
+    res.status(500).send("Internal server error");
+  }
+};
 module.exports = {
   getWorkAreas,
   getWorkAreaById,
@@ -146,4 +158,5 @@ module.exports = {
   getWorkAreasByCompanyId,
   deleteRequest,
   linkWorkerToCompany,
+  getWorkAreaRequests,
 };
