@@ -15,6 +15,8 @@ router.get("/", userController.getUsers);
 // get user by id
 router.get("/:id", userController.getUserById);
 
+// get user by workArea id
+router.get("/workArea/:workAreaId", userController.getUsersByWorkArea);
 
 
 module.exports = router;

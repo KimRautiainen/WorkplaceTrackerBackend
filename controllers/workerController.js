@@ -82,9 +82,20 @@ const getUserById = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+// get user by workArea id
+const getUsersByWorkArea = async (req, res) => {
+  try {
+    const users = await userModel.getUsersByWorkArea(req.params.workAreaId);
+    res.json(users);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
 module.exports = {
   postUser,
   checkToken,
   getUsers,
   getUserById,
+  getUsersByWorkArea,
 };
