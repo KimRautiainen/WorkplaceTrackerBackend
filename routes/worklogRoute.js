@@ -61,5 +61,9 @@ router.post(
   upload,
   worklogController.postWorkLog
 );
-
+// get worklog by userd id for workareaId for current day
+router.get(
+  "/:userId/:workAreaId/today",
+  worklogController.getWorkLogByIdForWorkareaIdToday
+);
 module.exports = router;

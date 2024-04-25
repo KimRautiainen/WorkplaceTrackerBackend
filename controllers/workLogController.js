@@ -82,6 +82,20 @@ const getWorklogsByCompanyId = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+// Fetch today's work log for a specified user and work area
+const getWorkLogByIdForWorkareaIdToday = async (req, res) => {
+  try {
+    const { userId, workAreaId } = req.params;  // Ensure params are correctly named
+    const worklog = await workLogModel.getWorkLogByIdForWorkareaIdToday(userId, workAreaId);
+    if (worklog) {
+      res.json(worklog);
+    } else {
+      res.status(404).json({ message: 'No work log found for today.' });
+    }
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
 
 module.exports = {
   getWorklogs,
@@ -89,4 +103,5 @@ module.exports = {
   getWorkLogByIdForWorkareaId,
   postWorkLog, 
   getWorklogsByCompanyId,
+  getWorkLogByIdForWorkareaIdToday
 };

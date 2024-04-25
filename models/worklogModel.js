@@ -84,6 +84,25 @@ const getWorklogsByCompanyId = async (companyId) => {
     throw new Error("sql query failed", e);
   }
 }
+// get worklog by id for workareaId for today
+const getWorkLogByIdForWorkareaIdToday = async (userId, workAreaId) => {
+  const query = `
+    SELECT *
+    FROM work_log
+    WHERE worker_id = ?
+      AND workArea_id = ?
+      AND DATE(date_recorded) = CURDATE()
+    ORDER BY start_time DESC;
+  `;
+
+  try {
+    const [results] = await promisePool.execute(query, [userId, workAreaId]);
+    return results.length > 0 ? results : null;  // Return the most recent log or null if none
+  } catch (error) {
+    console.error('Error fetching today\'s work log:', error);
+    throw error;  // Rethrow to handle error once more in the controller
+  }
+};
 
 module.exports = {
   getWorklogs,
@@ -92,4 +111,5 @@ module.exports = {
   getCompanyIdByWorkAreaId,
   insertWorkLog,
   getWorklogsByCompanyId,
+  getWorkLogByIdForWorkareaIdToday,
 };
