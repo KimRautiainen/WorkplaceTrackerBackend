@@ -85,19 +85,11 @@ const getUsers = async () => {
 const getUsersByWorkArea = async (workAreaId) => {
   try {
     const sql = `
-      SELECT 
-        w.id, 
-        w.name, 
-        w.email, 
-        w.phone,
-        w.picture,
-        w.salary,
-        w.created_at,
-        ww.is_active,
-        ww.joined_at
-      FROM worker w
-      JOIN worker_workArea ww ON w.id = ww.worker_id
-      WHERE ww.workArea_id = ? AND ww.is_active = 1
+    SELECT w.*, wwa.is_active
+    FROM worker w
+    JOIN worker_workArea wwa ON w.id = wwa.worker_id
+    WHERE wwa.workArea_id = ? AND wwa.approved = 1
+    ORDER BY wwa.is_active DESC, w.name ASC;
     `;
     const [rows] = await promisePool.query(sql, [workAreaId]);
     return rows;
