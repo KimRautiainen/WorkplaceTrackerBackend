@@ -92,10 +92,29 @@ const getUsersByWorkArea = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+// get user and is_active by workArea id and user id
+const getUserWorkAreaController = async (req, res) => {
+  const { workAreaId, userId } = req.params;  // Assuming these are passed as URL parameters
+
+  try {
+      const userWorkAreaDetails = await userModel.getUserWorkArea(workAreaId, userId);
+      if (userWorkAreaDetails) {
+          res.json(userWorkAreaDetails);
+      } else {
+          res.status(404).send({ message: "User not found in the specified work area or not active." });
+      }
+  } catch (error) {
+      console.error("Failed to retrieve user details:", error);
+      res.status(500).send({ message: "Internal server error when attempting to fetch user details." });
+  }
+};
+
 module.exports = {
   postUser,
   checkToken,
   getUsers,
   getUserById,
   getUsersByWorkArea,
+  getUserWorkAreaController
 };
