@@ -15,6 +15,7 @@ router.get("/", userController.getUsers);
 // get user by id
 router.get("/:id", userController.getUserById);
 
+// get worker-company by id
 
 
 module.exports = router;
