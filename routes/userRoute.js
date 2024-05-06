@@ -20,5 +20,7 @@ router.get("/workArea/:workAreaId", userController.getUsersByWorkArea);
 
 router.get('/workArea/:workAreaId/users/:userId', userController.getUserWorkAreaController);
 
+// get all users by company id
+router.get("/company/:companyId", userController.getUsersByCompany);
 
 module.exports = router;

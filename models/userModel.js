@@ -128,6 +128,23 @@ const getUserWorkArea = async (workAreaId, userId) => {
     throw new Error("Failed to retrieve user for the work area");
   }
 };
+// get all users by company id
+const getUsersByCompany = async (companyId) => {
+  try {
+    const sql = `
+    SELECT w.*
+    FROM worker w
+    JOIN worker_company wwa ON w.id = wwa.worker_id
+    WHERE wwa.company_id = ? AND wwa.is_approved = 1
+    
+    `;
+    const [rows] = await promisePool.query(sql, [companyId]);
+    return rows;
+  } catch (error) {
+    console.error("Error fetching users by companyId:", error);
+    throw new Error("Failed to retrieve users for the company");
+  }
+};
 
 module.exports = {
   getUserById,
@@ -137,4 +154,5 @@ module.exports = {
   getUsers,
   getUsersByWorkArea,
   getUserWorkArea,
+  getUsersByCompany,
 };

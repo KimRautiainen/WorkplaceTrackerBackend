@@ -10,7 +10,9 @@ const getEmployeeById = async (id) => {
           name, 
           email, 
           phone, 
-          picture, 
+          picture,
+          businessId, 
+          address,
           created_at 
         FROM company WHERE id=?
       `;

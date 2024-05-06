@@ -110,11 +110,22 @@ const getUserWorkAreaController = async (req, res) => {
   }
 };
 
+// get all users by company id
+const getUsersByCompany = async (req, res) => {
+  try {
+    const users = await userModel.getUsersByCompany(req.params.companyId);
+    res.json(users);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
 module.exports = {
   postUser,
   checkToken,
   getUsers,
   getUserById,
   getUsersByWorkArea,
-  getUserWorkAreaController
+  getUserWorkAreaController,
+  getUsersByCompany,
 };

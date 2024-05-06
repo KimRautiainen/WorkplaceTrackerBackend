@@ -40,5 +40,7 @@ app.use('/worklogs', passport.authenticate('jwt-user', {session: false}), requir
 // Use the workAreaRoute for handling workArea-related routes
 app.use('/workAreas', authenticateDualStrategy, require('./routes/workAreaRoute'));
 
+// Use the employeeRoute for handling employee-related routes
+app.use('/employee', passport.authenticate('jwt-employee', {session: false}), require('./routes/employeeRoute'));
 
 module.exports = app;
